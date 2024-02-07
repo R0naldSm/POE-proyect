@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Compile Update="Vistas\FrmAdministrador.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Vistas\FrmAgregarCandidata.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Vistas\FrmCandidaturas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Vistas\FrmCreacionAlbum.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Vistas\FrmEstudiante.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Vistas\FrmInicioSesion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Vistas\FrmPerfil.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Vistas\FrmReina.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Vistas\FrmResultados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Vistas\FrmVisualizacionAlbum.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Vistas\UcAlbumes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Vistas\UcAlbumMini.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Vistas\UcReina.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>
