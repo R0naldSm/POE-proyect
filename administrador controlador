@@ -1,0 +1,66 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ReinaFCMF.Vistas;
+
+namespace ReinaFCMF.Controladores
+{
+    class AdministradorController
+    {
+        FrmAdministrador vista_admin;
+
+        //Constructor
+        public AdministradorController(FrmAdministrador vista)
+        {
+            vista_admin = vista;
+            vista_admin.btnCandidaturas.Click += new EventHandler(btnCandidaturas_Click);
+            vista_admin.btnRegistrarCandidatas.Click += new EventHandler(btnRegistrarCandidatas_Click);
+            vista_admin.btnResultados.Click += new EventHandler(btnResultados_Click);
+            vista_admin.btnCerrarSesion.Click += new EventHandler(btnCerrarSesion_Click);
+        }
+
+        //Métodos manejadores de eventos
+        private void AbrirFormSecundario(Form formSecundario)
+        {
+            //Evaluamos si el panel contenedor tiene elementos o controles adentro
+            while (vista_admin.pnlContenedor.Controls.Count > 0)
+            {
+                //Si es asi, eliminamos todo los controles que tenga
+                vista_admin.pnlContenedor.Controls.RemoveAt(0);
+            }
+            Form frm = formSecundario;
+            frm.Tag = vista_admin.IdUsuario;
+            frm.TopLevel = false;
+            frm.FormBorderStyle = FormBorderStyle.None;
+            frm.Dock = DockStyle.Fill;
+            vista_admin.pnlContenedor.Controls.Add(frm);
+            vista_admin.pnlContenedor.Tag = frm;
+            frm.Show();
+        }
+
+        private void btnCandidaturas_Click(object sender, EventArgs e)
+        {
+            AbrirFormSecundario(new FrmCandidaturas());
+        }
+
+        private void btnRegistrarCandidatas_Click(object sender, EventArgs e)
+        {
+            AbrirFormSecundario(new FrmAgregarCandidata());
+        }
+
+        private void btnResultados_Click(object sender, EventArgs e)
+        {
+            AbrirFormSecundario(new FrmResultados());
+        }
+
+        private void btnCerrarSesion_Click(object sender, EventArgs e)
+        {
+            vista_admin.Close();
+
+            FrmInicioSesion vista_login = FrmInicioSesion.ObtenerInstancia();
+            vista_login.Show();
+        }
+    }
+}
