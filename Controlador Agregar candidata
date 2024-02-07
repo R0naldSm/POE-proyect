@@ -1,0 +1,143 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ReinaFCMF.Modelos.Dao;
+using ReinaFCMF.Modelos.Dto;
+using ReinaFCMF.Vistas;
+
+namespace ReinaFCMF.Controladores
+{
+    public class AgregarCandidataController
+    {
+        FrmAgregarCandidata vista_agg_cand;
+        FrmCreacionAlbum vista_creacion_album;
+
+        int contador;
+        int idCandidata;
+        List<int> ids_albumes;
+
+        public AgregarCandidataController(FrmAgregarCandidata vista)
+        {
+            vista_agg_cand = vista;
+            vista_agg_cand.btnAgregar.Click += new EventHandler(btnAgregar_Click);
+            vista_agg_cand.btnRegistrar.Click += new EventHandler(btnRegistrar_Click);
+            vista_agg_cand.Load += new EventHandler(FrmAgregarCandidata_Load);
+            vista_agg_cand.btnNuevoAlbum.Click += new EventHandler(btnNuevoAlbum_Click);
+        }
+
+        public void FrmAgregarCandidata_Load(object sender, EventArgs e)
+        {
+            vista_agg_cand.IdUsuario = int.Parse(vista_agg_cand.Tag.ToString());
+            
+            //Agregar ítems al cmbCarrera
+            vista_agg_cand.cmbCarrera.Items.Add("Ingeniería Civil");
+            vista_agg_cand.cmbCarrera.Items.Add("Software");
+            vista_agg_cand.cmbCarrera.Items.Add("Tecnologías de la Información");
+            vista_agg_cand.cmbCarrera.Items.Add("Ciencia de Datos e Inteligencia Artificial");
+        }
+
+        public void LimpiarControlesAG()
+        {
+            vista_agg_cand.txtNombre.Text = "";
+            vista_agg_cand.txtApellido.Text = "";
+            vista_agg_cand.numdwnEdad.Value = 0;
+            vista_agg_cand.txtCiudad.Text = "";
+            vista_agg_cand.cmbCarrera.Text = "";
+            vista_agg_cand.txtParalelo.Text = "";
+            vista_agg_cand.txtPasatiempo.Text = "";
+            vista_agg_cand.txtAspiraciones.Text = "";
+            vista_agg_cand.txtIntereses.Text = "";
+            vista_agg_cand.picFotoPerfil.Image = null;
+        }
+
+        public void btnAgregar_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog abrir_archivo = new OpenFileDialog(); //Abrimos la ventana exploradora de archivos para obtener la imagen
+            abrir_archivo.Filter = "archivos de imagen (*jpg; *png) |*jpg; *png; "; //Agregamos un filtro para que solo nos muestre los archivos jpg y png
+            if(abrir_archivo.ShowDialog() == DialogResult.OK) 
+            {
+                //Aquí va el código para abrir y leer el archivo
+                vista_agg_cand.picFotoPerfil.Image = Image.FromFile(abrir_archivo.FileName);
+            }
+        }
+
+        public void btnNuevoAlbum_Click(object sender, EventArgs e)
+        {
+            UcAlbumMini ucAlbummini = new UcAlbumMini();
+            vista_agg_cand.flowAlbum.Controls.Add(ucAlbummini);
+            
+            vista_creacion_album = new FrmCreacionAlbum();
+            vista_agg_cand.StartPosition = FormStartPosition.CenterScreen;
+            vista_creacion_album.Show();
+
+            contador++;
+        }
+
+        public void enlazarAlbum()
+        {
+            AlbumDAO album_dao = new AlbumDAO();
+
+            ids_albumes = album_dao.BuscarAlbumParaAsociar(contador); //Obtenemos los id´s de los últimos álbumes registrados
+
+            foreach (int id in ids_albumes)
+            {
+                album_dao.actualizarIdCandidata(idCandidata, id);
+            }
+        }
+
+        public void btnRegistrar_Click(object sender, EventArgs e)
+        {
+            //Creamos un objeto "candidatas"
+            Candidatas cand = new Candidatas();
+            CandidatasDAO candDAO = new CandidatasDAO();
+
+            //Asignamos los valores
+            cand.Nombre = vista_agg_cand.txtNombre.Text;
+            cand.Apellido = vista_agg_cand.txtApellido.Text;
+            cand.Edad = vista_agg_cand.numdwnEdad.Text;
+            cand.Ciudad = vista_agg_cand.txtCiudad.Text;
+            cand.Carrera = vista_agg_cand.cmbCarrera.Text;
+            cand.Paralelo = vista_agg_cand.txtParalelo.Text;
+            cand.Pasatiempos = vista_agg_cand.txtPasatiempo.Text;
+            cand.Aspiraciones = vista_agg_cand.txtAspiraciones.Text;
+            cand.Intereses = vista_agg_cand.txtIntereses.Text;
+            cand.Id_usuario = vista_agg_cand.IdUsuario;
+
+            MemoryStream ms = new MemoryStream();
+            vista_agg_cand.picFotoPerfil.Image.Save(ms, ImageFormat.Jpeg);
+            byte[] imagen_byte =  ms.ToArray(); //Convertimos la imagen a byte
+
+            cand.Foto = imagen_byte;
+
+            if (vista_agg_cand.rbtnReina.Checked)
+            {
+                cand.Id_candidatura = 1; //Reina FCMF
+            }
+            if (vista_agg_cand.rbtnMiss.Checked)
+            {
+                cand.Id_candidatura = 2; //Miss Fotogenia
+            }
+
+            int resultado = (int)candDAO.RegistrarCandidata(cand);
+
+            vista_agg_cand.IdCandidata = resultado;
+
+            if (resultado > 0)
+            {
+                MessageBox.Show("Se ha registrado a la candidata en la base de datos correctamente!");
+                idCandidata = resultado;
+                LimpiarControlesAG();
+            }
+            else
+            {
+                MessageBox.Show("Se ha producido un error al registrar a la candidata");
+            }
+
+            enlazarAlbum();
+        }
+
+    }
+}
