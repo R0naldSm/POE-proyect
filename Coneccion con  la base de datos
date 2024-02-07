@@ -1,0 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ReinaFCMF.Modelos.Dao
+{
+    public class DBContext
+    {
+        static string conexionString = conexionString = @"Server=DESKTOP-FRIAS\SQLEXPRESS; DataBase=BaseProyectoElecciones; Integrated Security=true";
+
+        //Creamos una conexion a la base de datos
+        protected SqlConnection conexion = new SqlConnection(conexionString);
+
+    }
+}
